@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@4.12.19/dist/full.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <title>My Cal Money</title>
+  </head>
+  <body>
+    <div
+      class="navbar bg-base-100 w-full justify-center mb-8 absolute fixed bg-primary z-50"
+    >
+      <a class="btn btn-ghost text-xl text-white">คำนวณยอดเงิน</a>
+    </div>
+
+    <div class="container px-4 pb-4 sm:p-0 pt-20">
+      <form>
+        <input
+          oninput="calculateSum()"
+          inputmode="decimal"
+          type="text"
+          id="income"
+          max="9999999"
+          min="1"
+          placeholder="กรอกจำนวนเงิน"
+          class="input input-bordered w-full"
+        />
+      </form>
+
+      <div class="card bg-base-100 shadow-xl w-full mt-4">
+        <div class="card-body">
+          <h2 class="card-title">ผลลัพธ์</h2>
+          <div class="overflow-x-auto">
+            <table class="table w-full">
+              <!-- Table Header -->
+              <thead>
+                <tr>
+                  <th>รายการ</th>
+                  <th>ร้อยละ</th>
+                  <th>จำนวนเงิน</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Rows -->
+                <tr>
+                  <td class="">จำเป็น</td>
+                  <td>
+                    <div class="badge badge-neutral badge-sm ml-1">70%</div>
+                  </td>
+                  <td class="font-semibold text-success" id="result1">0 ฿</td>
+                </tr>
+                <tr>
+                  <td>ต้องการ</td>
+                  <td>
+                    <div class="badge badge-neutral badge-sm ml-1">15%</div>
+                  </td>
+                  <td class="font-semibold text-success" id="result2">0 ฿</td>
+                </tr>
+                <tr>
+                  <td>เงินออม</td>
+                  <td>
+                    <div class="badge badge-neutral badge-sm ml-1">10%</div>
+                  </td>
+                  <td class="font-semibold text-success" id="result3">0 ฿</td>
+                </tr>
+                <tr>
+                  <td>ลงทุน</td>
+                  <td>
+                    <div class="badge badge-neutral badge-sm ml-1">5%</div>
+                  </td>
+                  <td class="font-semibold text-success" id="result4">0 ฿</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card bg-base-100 shadow-xl w-full mt-4">
+        <div class="card-body">
+          <h2 class="card-title text-info">เงินออม</h2>
+          <div class="overflow-x-auto">
+            <table class="table w-full">
+              <!-- Table Header -->
+              <thead>
+                <tr>
+                  <th>รายการ</th>
+                  <th>ร้อยละ</th>
+                  <th>จำนวนเงิน</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Rows -->
+                <tr>
+                  <td>เกษียณ</td>
+                  <td>
+                    <div class="badge badge-neutral badge-sm ml-1">40%</div>
+                  </td>
+                  <td class="font-semibold text-success" id="saving1">0 ฿</td>
+                </tr>
+                <tr>
+                  <td class="">สุขภาพ</td>
+                  <td>
+                    <div class="badge badge-neutral badge-sm ml-1">30%</div>
+                  </td>
+                  <td class="font-semibold text-success" id="saving2">0 ฿</td>
+                </tr>
+                <tr>
+                  <td>สำรอง</td>
+                  <td>
+                    <div class="badge badge-neutral badge-sm ml-1">30%</div>
+                  </td>
+                  <td class="font-semibold text-success" id="saving3">0 ฿</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 text-sm text-neutral text-center">
+        <span>Copyright © 2024 PiamDev</span>
+        <p>All rights reserved.</p>
+      </div>
+    </div>
+
+    <script>
+      function calculateSum() {
+        const income = document.getElementById("income").value;
+
+        const input = parseFloat(income);
+        if (isNaN(input) || input <= 0) {
+          // Reset results if input is invalid
+          for (let i = 1; i <= 4; i++) {
+            document.getElementById("result" + i).textContent = "0 ฿";
+          }
+          for (let j = 1; j <= 3; j++) {
+            document.getElementById("saving" + j).textContent = "0 ฿";
+          }
+          return;
+        }
+
+        const type = [70, 15, 10, 5];
+        const type2 = [40, 30, 30];
+
+        let savingsAmount = 0;
+
+        // Calculate main categories
+        for (let i = 0; i < type.length; i++) {
+          const result = (input * type[i]) / 100;
+          document.getElementById("result" + (i + 1)).textContent =
+            result.toLocaleString("th-TH", { minimumFractionDigits: 2 }) + " ฿";
+
+          // Save "เงินออม" amount for further calculation
+          if (i === 2) {
+            savingsAmount = result;
+          }
+        }
+
+        // Calculate subcategories of "เงินออม"
+        for (let j = 0; j < type2.length; j++) {
+          const result2 = (savingsAmount * type2[j]) / 100;
+          document.getElementById("saving" + (j + 1)).textContent =
+            result2.toLocaleString("th-TH", { minimumFractionDigits: 2 }) + " ฿";
+        }
+      }
+    </script>
+  </body>
+</html>
